@@ -180,7 +180,7 @@ def main() -> None:
     holidays_de_be = holidays.country_holidays("DE", subdiv="BE")
     is_holiday = weekday == 6 or now.date() in holidays_de_be
 
-    if now.hour + now.minute / 60 < 6.3 and not is_holiday or now.hour + now.minute / 60 > 7.3:
+    if now.hour + now.minute / 60 < 6.3 and not is_holiday or now.hour + now.minute / 60 < 7.3:
         print("don't send images during the night/morning")
         return
 
