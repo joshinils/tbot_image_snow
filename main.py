@@ -56,17 +56,21 @@ def check_if_latest_file_is_already_sent(latest_filename: str) -> bool:
     return False
 
 
-def argparse_do() -> argparse.Namespace:
+def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="send photo of snow")
     parser.add_argument("-d", help="enable debug mode", default=False, action="store_true",)
 
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    global debug
+    debug = args.d
+
+    return args
 
 
 def main() -> None:
-    args = argparse_do()
+    parse_arguments()
     global debug
-    debug = args.d
 
     home = expanduser("~")
     with open(f"{home}/Documents/erinner_bot/server-mail.id", 'r') as f:
