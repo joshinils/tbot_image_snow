@@ -53,7 +53,7 @@ def telegram_bot_sendphoto(photo: FTPFile | BufferedReader, chat_id: str, captio
 def read_string_from_file(file_path: str) -> Optional[str]:
     try:
         with open(file_path, 'r') as f:
-            return f.read()
+            return f.read().strip()
     except FileNotFoundError:
         return None
 
