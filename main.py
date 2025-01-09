@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
+import argparse
 from os.path import expanduser
 from typing import Dict, Optional
 
 import requests
+
+global debug
+debug: bool
 
 
 def telegram_bot_sendphoto(photo_path: str, chat_id: str, disable_notification: bool = True, message_thread_id: Optional[str] = None) -> Dict:
@@ -25,7 +29,8 @@ def telegram_bot_sendphoto(photo_path: str, chat_id: str, disable_notification: 
             data['message_thread_id'] = message_thread_id
 
         response = requests.post(url, files=files, data=data)
-    print(type(response), response)
+    if debug:
+        print(type(response), response)
     response_json: Dict = response.json()
     return response_json
 
@@ -36,7 +41,20 @@ with open(f"{home}/Documents/erinner_bot/server-mail.id", 'r') as f:
 
 thread_id_cam_snow = "4738"
 
-photo_path = "/home/jola/Downloads/test.png"
-response = telegram_bot_sendphoto(photo_path, server_mail_id, message_thread_id=thread_id_cam_snow)
-print(response)
 
+def main() -> None:
+    parser = argparse.ArgumentParser(description="send photo of snow")
+    parser.add_argument("-d", help="enable debug mode", default=False, action="store_true",)
+
+    args = parser.parse_args()
+    global debug
+    debug = args.d
+
+    photo_path = "/home/jola/Downloads/test.png"
+    response = telegram_bot_sendphoto(photo_path, server_mail_id, message_thread_id=thread_id_cam_snow)
+    if debug:
+        print(response)
+
+
+if __name__ == "__main__":
+    main()
