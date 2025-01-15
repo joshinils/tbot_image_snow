@@ -133,6 +133,24 @@ async def getweather(city_name: str) -> Tuple[Forecast, Forecast]:
     return weather_metric, weather_imperial
 
 
+def skip_image_sending(now: datetime.datetime, is_holiday: bool, last_modified_delta: datetime.timedelta) -> bool:
+    now_hour_float = now.hour + now.minute / 60
+    if now_hour_float <= 6.2 and not is_holiday or now_hour_float <= 7.2 and is_holiday:
+        # print("don't send images during the night/morning")
+        return True
+
+    if now_hour_float >= 7.5 and not is_holiday or now_hour_float >= 9.5 and is_holiday:
+        if last_modified_delta < datetime.timedelta(hours=3):
+            # print("don't send frequent images during the day")
+            return True
+
+    if now_hour_float >= 19.4:
+        # print("don't send images during the night")
+        return True
+
+    return False
+
+
 def main() -> None:
     parse_arguments()
     global debug
@@ -180,17 +198,7 @@ def main() -> None:
     holidays_de_be = holidays.country_holidays("DE", subdiv="BE")
     is_holiday = weekday == 6 or now.date() in holidays_de_be
 
-    if now.hour + now.minute / 60 < 6.3 and not is_holiday or now.hour + now.minute / 60 < 7.3:
-        print("don't send images during the night/morning")
-        return
-
-    if now.hour + now.minute / 60 > 7.5 and not is_holiday or now.hour + now.minute / 60 > 9.5:
-        if delta_hours < 3:
-            print("don't send frequent images during the day")
-            return
-
-    if now.hour + now.minute / 60 > 19.3:
-        print("don't send images during the night")
+    if skip_image_sending(now, is_holiday, last_modified_delta):
         return
 
     if temp_min > 3:
@@ -214,7 +222,7 @@ def main() -> None:
             print("latest file already sent")
             return
 
-        caption += " " + files_list[-1]
+        caption += "\n" + files_list[-1]
         with ftp.open(files_list[-1], 'rb') as photo:
             response = telegram_bot_sendphoto(photo=photo, chat_id=chat_id, message_thread_id="4738", caption=caption)
             if response["ok"]:
