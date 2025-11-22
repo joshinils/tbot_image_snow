@@ -3,6 +3,7 @@ import argparse
 import asyncio
 import datetime
 import os
+import re
 import statistics
 from io import BufferedReader
 from os.path import expanduser
@@ -52,8 +53,6 @@ def telegram_bot_sendphoto(photo: FTPFile | BufferedReader, chat_id: str, captio
 
 def replace_minus_sign(text: str) -> str:
     """Replace ASCII dash with Unicode minus sign for negative numbers."""
-    import re
-
     # Match dash followed by digits (optionally with decimal point)
     # This pattern matches: -digit or -digit.digit
     pattern = r'-(\d)'
