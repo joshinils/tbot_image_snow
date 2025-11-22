@@ -50,6 +50,11 @@ def telegram_bot_sendphoto(photo: FTPFile | BufferedReader, chat_id: str, captio
     return response_json
 
 
+def replace_minus_sign(text: str) -> str:
+    """Replace ASCII dash with Unicode minus sign for negative numbers."""
+    return text.replace('-', '−')
+
+
 def read_string_from_file(file_path: str) -> Optional[str]:
     try:
         with open(file_path, 'r') as f:
@@ -172,7 +177,8 @@ def main() -> None:
             if kind.lower() != desc.lower():
                 desc += f" ({kind})"
 
-            description_and_kind.append(f"{dt.time().hour:02}:{dt.time().minute:02}{value_dict['temperature']: >-6.2f} °C  {desc}")
+            formatted_line = f"{dt.time().hour:02}:{dt.time().minute:02}{value_dict['temperature']: >-6.2f} °C  {desc}"
+            description_and_kind.append(replace_minus_sign(formatted_line))
 
     temp_median = statistics.median(temps)
     temp_mean = statistics.mean(temps)
@@ -181,7 +187,8 @@ def main() -> None:
     temp_range = temp_max - temp_min
     temp_deviation = statistics.stdev(temps)
     list_of_temps = '\n'.join(description_and_kind)
-    caption = f"{temp_min=} {temp_median=} {temp_mean=} {temp_max=} {temp_range=} {temp_deviation=}\n{temps=}\n`{list_of_temps}`"
+    caption_line = f"{temp_min=} {temp_median=} {temp_mean=} {temp_max=} {temp_range=} {temp_deviation=}\n{temps=}\n`{list_of_temps}`"
+    caption = replace_minus_sign(caption_line)
     print(caption)
 
     # get time last modified of file "latest_filename"
