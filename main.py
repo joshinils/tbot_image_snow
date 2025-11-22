@@ -3,7 +3,6 @@ import argparse
 import asyncio
 import datetime
 import os
-import re
 import statistics
 from io import BufferedReader
 from os.path import expanduser
@@ -36,7 +35,7 @@ def telegram_bot_sendphoto(photo: FTPFile | BufferedReader, chat_id: str, captio
         "parse_mode": "MarkdownV2",
     }
     if caption is not None:
-        escape_chars = ['_', '*', '[', ']', '(', ')', '~', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!', '−']  # not including "`", which I use to format as code
+        escape_chars = ['_', '*', '[', ']', '(', ')', '~', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']  # not including "`", which I use to format as code
         for char in escape_chars:
             caption = caption.replace(char, f"\\{char}")
         data['caption'] = caption
@@ -53,10 +52,7 @@ def telegram_bot_sendphoto(photo: FTPFile | BufferedReader, chat_id: str, captio
 
 def replace_minus_sign(text: str) -> str:
     """Replace ASCII dash with Unicode minus sign for negative numbers."""
-    # Match dash followed by digits (optionally with decimal point)
-    # This pattern matches: -digit or -digit.digit
-    pattern = r'-(\d)'
-    return re.sub(pattern, r'−\1', text)
+    return text.replace('-', '−')
 
 
 def read_string_from_file(file_path: str) -> Optional[str]:
