@@ -187,7 +187,7 @@ def main() -> None:
     temp_range = temp_max - temp_min
     temp_deviation = statistics.stdev(temps)
     list_of_temps = '\n'.join(description_and_kind)
-    caption_line = f"min={temp_min:.2f} med={temp_median:.2f} avg={temp_mean:.2f} max={temp_max:.2f} rge={temp_range:.2f} dev={temp_deviation:.2f}\n`{list_of_temps}`"
+    caption_line = f"min={temp_min:.2f} med={temp_median:.2f} avg={temp_mean:.2f} max={temp_max:.2f} rge={temp_range:.2f} dev={temp_deviation:.2f}\n⁰C={temps}\n`{list_of_temps}`"
     caption = replace_minus_sign(caption_line)
     print(caption)
 
